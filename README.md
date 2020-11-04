@@ -1,6 +1,8 @@
 ## README
 Terraform Azure Code Snippet By Mohamed Faizal
 
+To install click https://marketplace.visualstudio.com/items?itemName=MohamedFaizal.tf-az-codesnippet
+
 A VSCode extension that provide Azure Terraform Provider code snippets to jump start you development and improve developer productivity. 
 
 ## Features
