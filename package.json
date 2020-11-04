@@ -1,10 +1,17 @@
 {
-    "name": "tfazurecodesnippet",
+    "name": "tf-az-codesnippet",
     "displayName": "Terraform Azure Code Snippet",
     "description": "Azure Terraform Code Snippet",
     "version": "0.0.1",
+    "publisher": "MohamedFaizal",
+    "license": "MIT",
     "engines": {
         "vscode": "^1.50.0"
+    },
+    "author": {
+        "name": "Mohamed Faizal",
+        "email": "kmdfaizal@yahoo.com",
+        "url": "https://github.com/mofaizal"
     },
     "categories": [
         "Snippets"

@@ -1,5 +1,36 @@
 
-{
+{ 
+   "resource-group": {
+        "prefix": "az-resource-group",
+        "description": "",
+        "body": [
+          "resource \"azurerm_resource_group\" \"resource_group\" {",
+          "  #count            = var.rg_enable == 1 ? 1 : 0",
+          "  name             = lower(\"rg-${var.resource_group_name}\")",
+          "  location         = var.region",
+          "}"
+        ],
+     
+      },
+
+      "storage-account": {
+        "prefix": "az-storage-account",
+        "description": "",
+        "body": [
+          "resource \"azurerm_storage_account\" \"storage_account\" {",
+          "  name                     = lower(\"${var.environment}${var.storage_account_name}\")",
+          "  resource_group_name      = var.resource_group_name",
+          "  location                 = var.region",
+          "  account_tier             = var.account_tier",
+          "  account_replication_type = var.account_replication_type",
+          "  account_kind             = var.account_kind",
+          "  access_tier              = var.access_tier",
+          "  tags                     = var.tagvalue",
+          "}"
+        ],
+     
+      },
+
     "network": {
         "scope": "scope",
         "prefix": "az-vnet",
@@ -16,10 +47,25 @@
         ]
 
     },
+
+    "network-subnet": {
+        "prefix": "az-subnet",
+        "description": "",
+        "body": [
+          "resource \"azurerm_subnet\" \"subnet\" {",
+          "  count                     = var.subnet_count",
+          "  name                      = var.subnet_names[count.index] == \"GatewaySubnet\" ? \"GatewaySubnet\" : \"subnet-${lower(var.environment)}-${lower(var.subnet_names[count.index])}\"",
+          "  virtual_network_name      = var.vnet_name",
+          "  resource_group_name       = var.resource_group_name",
+          "  address_prefix            = var.subnet_range[count.index]",
+          "}"
+        ],
+      },
+
     "network-var": {
         "scope": "scope",
         "description": "description",
-        "prefix": "az-vnet-var",
+        "prefix": "az-var",
         "body": ["# Variable Declaration for Resource group name",
         "variable \"resource_group_name\" {",
         "}",
