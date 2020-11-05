@@ -9,7 +9,7 @@ To install click https://marketplace.visualstudio.com/items?itemName=MohamedFaiz
 A VSCode extension that provide Azure Terraform Provider code snippets to jump start you development and improve developer productivity. 
 
 ## Demo GIF 
-[Demo]:https://github.com/mofaizal/Terraform-Azure-Code-Snippet/blob/master/src/az-tf-snippet.gif
+![Demo](https://github.com/mofaizal/Terraform-Azure-Code-Snippet/blob/master/src/az-tf-snippet.gif)
 
 
 ## Features
@@ -36,7 +36,7 @@ Example
 - Azure Storage Account type az-storage-acccount
 - Azure Virtual Netwrok type az-vent 
 
-[az-resource-group-demo]:https://github.com/mofaizal/Terraform-Azure-Code-Snippet/blob/master/src/example-rg.gif
+![az-resource-group-demo](https://github.com/mofaizal/Terraform-Azure-Code-Snippet/blob/master/src/example-rg.gif)
 
 ## Known Issues
 
