@@ -4,7 +4,7 @@
         "prefix": "az-resource-group",
         "description": "Azure Resource Group",
         "body": [
-          "# Source code for the Resource Group Creation"
+          "# Source code for the Resource Group Creation",
           "resource \"azurerm_resource_group\" \"resource_group\" {",
           "  #count            = var.rg_enable == 1 ? 1 : 0",
           "  name             = lower(\"rg-${var.resource_group_name}\")",
@@ -57,7 +57,8 @@
           "}"
         ]
       },
-      "vnet-peering": {
+
+    "vnet-peering": {
         "prefix": "az-vnet-peering",
         "description": "Azure VNET to VNET peering ",
         "body": [

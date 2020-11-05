@@ -2,7 +2,7 @@
     "name": "tf-az-codesnippet",
     "displayName": "Terraform Azure Code Snippet",
     "description": "Azure Terraform Code Snippet",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "icon": "src/az-tf.png",
     "publisher": "MohamedFaizal",
     "license": "MIT",
