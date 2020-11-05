@@ -2,15 +2,15 @@
 { 
    "resource-group": {
         "prefix": "az-resource-group",
-        "description": "",
+        "description": "Azure Resource Group",
         "body": [
+          "# Source code for the Resource Group Creation"
           "resource \"azurerm_resource_group\" \"resource_group\" {",
           "  #count            = var.rg_enable == 1 ? 1 : 0",
           "  name             = lower(\"rg-${var.resource_group_name}\")",
           "  location         = var.region",
           "}"
-        ],
-     
+        ]
       },
 
       "storage-account": {
@@ -27,17 +27,14 @@
           "  access_tier              = var.access_tier",
           "  tags                     = var.tagvalue",
           "}"
-        ],
-     
+        ]
       },
 
     "network": {
-        "scope": "scope",
         "prefix": "az-vnet",
-        "description": "description", 
+        "description": "Azure Virtual Network", 
         "body": [
               "resource \"azurerm_virtual_network\" \"vnet\" {",
-                "#count               = var.vnet_enable  == 1 ? length(var.vnet_name) : 0",
                 "name                = lower(\"vnet-${var.environment}-${var.vnet_name[count.index]}\")",
                 "address_space       = var.vnet_address[count.index]",
                 "location            = var.region",
@@ -45,12 +42,11 @@
                 "tags                = var.tagvalue",
              "}",
         ]
-
     },
 
     "network-subnet": {
         "prefix": "az-subnet",
-        "description": "",
+        "description": "Subnet",
         "body": [
           "resource \"azurerm_subnet\" \"subnet\" {",
           "  count                     = var.subnet_count",
@@ -59,12 +55,105 @@
           "  resource_group_name       = var.resource_group_name",
           "  address_prefix            = var.subnet_range[count.index]",
           "}"
-        ],
+        ]
+      },
+      "vnet-peering": {
+        "prefix": "az-vnet-peering",
+        "description": "Azure VNET to VNET peering ",
+        "body": [
+          "provider \"azurerm\" {",
+          "  alias           = hub",
+          "  tenant_id       = var.tenant_id",
+          "  subscription_id = var.env_subscription_id",
+          "}",
+          "provider \"azurerm\" {",
+          "  alias           = spoke",
+          "  tenant_id       = var.tenant_id",
+          "  subscription_id = var.subscription_id",
+          "}",
+          "",
+          "",
+          "#Resource Creation for Peer 1 Connection ",
+          "resource \"azurerm_virtual_network_peering\" \"Peer1\" {",
+          "  name                         = lower(\"vnet-${var.environment}-${var.vnet_name[0]}-to-vnet-${var.environment}-${var.vnet_name[1]}\")",
+          "  resource_group_name          = var.resource_group_name",
+          "  virtual_network_name         = \"vnet-\" var.environment\"-\"var.vnet_name[1]",
+          "  remote_virtual_network_id    = var.vnet_id",
+          "  allow_virtual_network_access = var.allow_virtual_network_access",
+          "  allow_forwarded_traffic      = var.allow_forwarded_traffic",
+          "  allow_gateway_transit        = var.allow_gateway_transit",
+          "  provider                     = azurerm.hub",
+          "}",
+          "",
+          "#Resource Creation for Peer 1 Connection ",
+          "resource \"azurerm_virtual_network_peering\" \"Peer2\" {",
+          "  name                         = lower(\"vnet-${var.environment}-${var.vnet_name[1]}-to-vnet-${var.environment}-${var.vnet_name[0]}\")",
+          "  resource_group_name          = var.bastion_resource_group",
+          "  virtual_network_name         = \"vnet-\" var.environment\"-\"var.vnet_name[1]",
+          "   remote_virtual_network_id    = var.vnet1_id",
+          "  allow_virtual_network_access = var.allow_virtual_network_access",
+          "  allow_forwarded_traffic      = var.allow_forwarded_traffic",
+          "  allow_gateway_transit        = var.allow_gateway_transit",
+          "  use_remote_gateways          = var.use_remote_gateways",
+          "  depends_on                   = [azurerm_virtual_network_peering.Peer1]",
+          "  provider                     = azurerm.spoke",
+          "",
+          "}"
+        ]
+      },
+
+      "Network-Security-Group": {
+        "prefix": "az-nsg",
+        "description": "Azure network security group",
+        "body": [
+          "resource \"azurerm_network_security_group\" \"networksg\" {",
+          "",
+          "  name                        =  lower(\"nsg-${var.environment}-${var.nsg_name[count.index]}\")",
+          "  location                    = var.region",
+          "  resource_group_name         = var.resource_group_name",
+          "  tags                        = var.tagvalue",
+          "}"
+        ]
+      },
+
+      "NSG-Rules": {
+        "prefix": "az-nsg-rules",
+        "description": "configured rules for NSG",
+        "body": [
+          "# Source code for creating configured rules for NSG",
+          "resource \"azurerm_network_security_rule\" \"predefined_rules\" {",
+          "  count                       = length(var.nsg_rules)",
+          "  name                        = var.nsg_rules[count.index]",
+          "  priority                    = element(var.rules[var.nsg_rules[count.index]], 0)",
+          "  direction                   = element(var.rules[var.nsg_rules[count.index]], 1)",
+          "  access                      = element(var.rules[var.nsg_rules[count.index]], 2)",
+          "  protocol                    = element(var.rules[var.nsg_rules[count.index]], 3)",
+          "  source_port_range           = element(var.rules[var.nsg_rules[count.index]], 4)",
+          "  destination_port_range      = element(var.rules[var.nsg_rules[count.index]], 5)",
+          "  description                 = element(var.rules[var.nsg_rules[count.index]], 6)",
+          "  source_address_prefix       = element(var.rules[var.nsg_rules[count.index]], 7)",
+          "  destination_address_prefix  = element(var.rules[var.nsg_rules[count.index]], 8) ",
+          "  resource_group_name         = var.resource_group_name",
+          "  network_security_group_name = var.nsg_name",
+          "}"
+        ]
+      }, 
+
+      "NSG-assocate": {
+        "prefix": "az-nsg-assocate-to-subnet",
+        "description": "Associate nsg with subnet",
+        "body": [
+          "# Resource Creation to associate nsg with subnet",
+          "resource \"azurerm_subnet_network_security_group_association\" \"networksgassociation\" {",
+          "    subnet_id                 = var.subnet_id[count.index]",
+          "    network_security_group_id = var.nsg_id[count.index]",
+          "   }",
+          ""
+        ]
       },
 
     "network-var": {
-        "scope": "scope",
-        "description": "description",
+        "description": "Variable Declaration",
         "prefix": "az-var",
         "body": ["# Variable Declaration for Resource group name",
         "variable \"resource_group_name\" {",
