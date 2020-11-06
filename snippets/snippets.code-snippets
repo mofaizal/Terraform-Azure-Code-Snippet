@@ -1,6 +1,6 @@
 
 { 
-   "resource-group": {
+   "1-resource-group": {
         "prefix": "az-resource-group",
         "description": "Azure Resource Group",
         "body": [
@@ -13,7 +13,7 @@
         ]
       },
 
-      "storage-account": {
+      "2-storage-account": {
         "prefix": "az-storage-account",
         "description": "",
         "body": [
@@ -30,7 +30,7 @@
         ]
       },
 
-    "network": {
+    "3-network": {
         "prefix": "az-vnet",
         "description": "Azure Virtual Network", 
         "body": [
@@ -45,7 +45,7 @@
         ]
     },
     
-    "network-subnet": {
+    "4-network-subnet": {
         "prefix": "az-subnet",
         "description": "Subnet",
         "body": [
@@ -59,7 +59,7 @@
         ]
       },
 
-    "vnet-peering": {
+    "5-vnet-peering": {
         "prefix": "az-vnet-peering",
         "description": "Azure VNET to VNET peering ",
         "body": [
@@ -104,7 +104,7 @@
         ]
       },
 
-      "Network-Security-Group": {
+      "6-Network-Security-Group": {
         "prefix": "az-nsg",
         "description": "Azure network security group",
         "body": [
@@ -118,7 +118,7 @@
         ]
       },
 
-      "NSG-Rules": {
+      "7-NSG-Rules": {
         "prefix": "az-nsg-rules",
         "description": "configured rules for NSG",
         "body": [
@@ -141,7 +141,7 @@
         ]
       }, 
 
-      "NSG-assocate": {
+      "8-NSG-assocate": {
         "prefix": "az-nsg-assocate-to-subnet",
         "description": "Associate nsg with subnet",
         "body": [
@@ -154,7 +154,71 @@
         ]
       },
 
-    "network-var": {
+      "9-Route-table": {
+        "prefix": "az-route-table",
+        "description": "Azure UDR Route table",
+        "body": [
+          "resource \"azurerm_route_table\" \"routetable\" {",
+          "  count                         = var.rt_enable  == 1 ? var.subnet_count : 0",
+          "  name                          = lower(\"rt-${var.environment}-${var.rt_name[count.index]}\")",
+          "  location                      = var.region",
+          "  resource_group_name           = var.resource_group_name",
+          "  disable_bgp_route_propagation = false",
+          "  tags                          = var.tagvalue",
+          "}",
+          ""
+        ]
+        
+      },
+
+      "10-Route-Table-Route": {
+        "prefix": "az-urd-route",
+        "description": "UDR route",
+        "body": [
+          "# Source code for the Route creation for the Route table",
+          "resource \"azurerm_route\" \"route\" {",
+          "  count                         = var.rt_enable  == 1 ? var.subnet_count : 0",
+          "  name                          = \"None\"",
+          "  resource_group_name           = var.resource_group_name",
+          "  route_table_name              = lower(\"rt-${var.environment}-${var.rt_name[count.index]}\")",
+          "  address_prefix                = \"0.0.0.0/0\"",
+          "  next_hop_type                 = \"None\"",
+          "  depends_on                    = [azurerm_route_table.routetable]",
+          "}",
+          ""
+        ]
+        
+      },
+      
+      "11-Route-table-associate": {
+        "prefix": "az-route-table-associate",
+        "description": "Resource creation to associate rt with subnets",
+        "body": [
+          "# Resource creation to associate rt with subnets",
+          "resource \"azurerm_subnet_route_table_association\" \"rt_subnet_association\" {",
+          "  count          = var.rt_enable == 1 ? var.subnet_count : 0",
+          "  subnet_id      = var.subnet_id[count.index]",
+          "  route_table_id = var.rt_id[count.index]",
+          "}"
+        ]
+
+      },
+
+      "12-module": {
+        "prefix": "module",
+        "description": "Terraform module template",
+        "body": [
+          "module \"yourname\" {",
+          "  source = \"moulde file path\"",
+          "  # Parameter Definition for the Azure Network Foundation components",
+          "    resource_group_name                      = var.resource_group_name",
+          "    region                                   = var.region",
+          "}"
+        ]
+      
+      },
+
+    "13-network-var": {
         "description": "Variable Declaration",
         "prefix": "az-var",
         "body": ["# Variable Declaration for Resource group name",
@@ -165,8 +229,23 @@
         "variable \"region \" {",
           "}",
         ]
-    }
+    },
 
+    "14-rg-auto-complete": {
+      "prefix": "resource_group",
+      "body": [
+        "azurerm_resource_group"
+      ],
+      "description": "required fields, location and name"
+    },
+
+    "15-vnet-auto-complete": {
+      "prefix": "vnet",
+      "body": [
+        "azurerm_virtual_network"
+      ],
+      "description": "required fields, location and name"
+    }
 }
 
 

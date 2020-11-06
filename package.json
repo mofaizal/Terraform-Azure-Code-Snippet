@@ -2,7 +2,7 @@
     "name": "tf-az-codesnippet",
     "displayName": "Terraform Azure Code Snippet",
     "description": "Azure Terraform Code Snippet",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "icon": "src/az-tf.png",
     "publisher": "MohamedFaizal",
     "license": "MIT",
@@ -14,9 +14,22 @@
         "email": "kmdfaizal@yahoo.com",
         "url": "https://github.com/mofaizal"
     },
+
     "categories": [
-        "Snippets"
+        "Snippets",
+        "Programming Languages",
+        "Other",
+        "Formatters"
     ],
+
+    "keywords": [
+        "Terraform",
+        "devops",
+        "infrastructure as code",
+        "automation",
+        "orchestration"
+    ],
+      
     "contributes": {
         "snippets": [
             {

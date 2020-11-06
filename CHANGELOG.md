@@ -2,6 +2,16 @@
 
 All notable changes to the "tf-az-codesnippet" extension will be documented in this file.
 
+## [0.0.3] - 2020-11-06
+### Added
+- VNET module bux fix
+- Snippet limited to following azure resources 
+  Version 0.0.2 + added newly below snippets
+  Terraform module template
+  Route Table
+  Route 
+  Route table associate with subnet 
+
 ## [0.0.2] - 2020-11-05
 ### Added
 - Extension Icon added 
